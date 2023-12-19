@@ -1,0 +1,468 @@
+{
+	"info": {
+		"_postman_id": "07966278-bf1e-4a08-9420-0c7b5e76fd3c",
+		"name": "Appworld - XC Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31738595"
+	},
+	"item": [
+		{
+			"name": "Get My Namespace",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/web/namespaces/{{namespace}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"web",
+						"namespaces",
+						"{{namespace}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Health Check",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-http-hc\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"http_health_check\": {\r\n      \"use_origin_server_name\": {},\r\n      \"path\": \"/\",\r\n      \"use_http2\": false,\r\n      \"headers\": {},\r\n      \"request_headers_to_remove\": [],\r\n      \"expected_status_codes\": [\r\n        \"200\"\r\n      ]\r\n    },\r\n    \"timeout\": 3,\r\n    \"interval\": 15,\r\n    \"jitter\": 0,\r\n    \"unhealthy_threshold\": 1,\r\n    \"healthy_threshold\": 3,\r\n    \"jitter_percent\": 30\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/healthchecks",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"healthchecks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Origin Pool",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-demoshop-pool\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"origin_servers\": [\r\n      {\r\n        \"public_name\": {\r\n          \"dns_name\": \"shop.sales-demo.f5demos.com\",\r\n          \"refresh_interval\": 300\r\n        },\r\n        \"labels\": {}\r\n      }\r\n    ],\r\n    \"use_tls\": {\r\n      \"use_host_header_as_sni\": {},\r\n      \"tls_config\": {\r\n        \"default_security\": {}\r\n      },\r\n      \"volterra_trusted_ca\": {},\r\n      \"no_mtls\": {}\r\n    },\r\n    \"port\": 443,\r\n    \"same_as_endpoint_port\": {},\r\n    \"healthcheck\": [\r\n      {\r\n        \"namespace\": \"{{namespace}}\",\r\n        \"name\": \"{{namespace}}-http-hc\",\r\n        \"kind\": \"healthcheck\"\r\n      }\r\n    ],\r\n    \"loadbalancer_algorithm\": \"LB_OVERRIDE\",\r\n    \"endpoint_selection\": \"LOCAL_PREFERRED\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/origin_pools",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"origin_pools"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create HTTP Load Balancer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-demoshop-http-lb\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"domains\": [\r\n      \"{{namespace}}-demoshop.lab-app.f5demos.com\"\r\n    ],\r\n    \"http\": {\r\n      \"dns_volterra_managed\": true,\r\n      \"port\": 80\r\n    },\r\n    \"downstream_tls_certificate_expiration_timestamps\": [],\r\n    \"advertise_on_public_default_vip\": {},\r\n    \"default_route_pools\": [\r\n      {\r\n        \"pool\": {\r\n          \"namespace\": \"{{namespace}}\",\r\n          \"name\": \"{{namespace}}-demoshop-pool\",\r\n          \"kind\": \"origin_pool\"\r\n        },\r\n        \"weight\": 1,\r\n        \"priority\": 1,\r\n        \"endpoint_subsets\": {}\r\n      }\r\n    ],\r\n    \"routes\": [],\r\n    \"disable_waf\": {},\r\n    \"add_location\": true,\r\n    \"no_challenge\": {},\r\n    \"user_id_client_ip\": {},\r\n    \"disable_rate_limit\": {},\r\n    \"waf_exclusion_rules\": [],\r\n    \"data_guard_rules\": [],\r\n    \"blocked_clients\": [],\r\n    \"trusted_clients\": [],\r\n    \"ddos_mitigation_rules\": [],\r\n    \"service_policies_from_namespace\": {},\r\n    \"round_robin\": {},\r\n    \"disable_trust_client_ip_headers\": {},\r\n    \"disable_ddos_detection\": {},\r\n    \"disable_malicious_user_detection\": {},\r\n    \"disable_api_discovery\": {},\r\n    \"disable_bot_defense\": {},\r\n    \"disable_api_definition\": {},\r\n    \"disable_ip_reputation\": {},\r\n    \"disable_client_side_defense\": {},\r\n    \"graphql_rules\": [],\r\n    \"protected_cookies\": [],\r\n    \"auto_cert_info\": {\r\n      \"auto_cert_state\": \"AutoCertDisabled\",\r\n      \"dns_records\": []\r\n    },\r\n    \"internet_vip_info\": [],\r\n    \"system_default_timeouts\": {}\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/http_loadbalancers",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"http_loadbalancers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create App Firewall",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-appfw\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"blocking\": {},\r\n    \"default_detection_settings\": {},\r\n    \"default_bot_setting\": {},\r\n    \"allow_all_response_codes\": {},\r\n    \"default_anonymization\": {},\r\n    \"use_default_blocking_page\": {}\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/app_firewalls",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"app_firewalls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add App FW to HTTP Load Balancer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-demoshop-http-lb\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"domains\": [\r\n      \"{{namespace}}-demoshop.lab-app.f5demos.com\"\r\n    ],\r\n    \"http\": {\r\n      \"dns_volterra_managed\": true,\r\n      \"port\": 80\r\n    },\r\n    \"downstream_tls_certificate_expiration_timestamps\": [],\r\n    \"advertise_on_public_default_vip\": {},\r\n    \"default_route_pools\": [\r\n      {\r\n        \"pool\": {\r\n          \"namespace\": \"{{namespace}}\",\r\n          \"name\": \"{{namespace}}-demoshop-pool\",\r\n          \"kind\": \"origin_pool\"\r\n        },\r\n        \"weight\": 1,\r\n        \"priority\": 1,\r\n        \"endpoint_subsets\": {}\r\n      }\r\n    ],\r\n    \"routes\": [],\r\n    \"app_firewall\": {\r\n      \"namespace\": \"{{namespace}}\",\r\n      \"name\": \"{{namespace}}-appfw\",\r\n      \"kind\": \"app_firewall\"\r\n    },\r\n    \"add_location\": true,\r\n    \"no_challenge\": {},\r\n    \"user_id_client_ip\": {},\r\n    \"disable_rate_limit\": {},\r\n    \"waf_exclusion_rules\": [],\r\n    \"data_guard_rules\": [],\r\n    \"blocked_clients\": [],\r\n    \"trusted_clients\": [],\r\n    \"ddos_mitigation_rules\": [],\r\n    \"service_policies_from_namespace\": {},\r\n    \"round_robin\": {},\r\n    \"disable_trust_client_ip_headers\": {},\r\n    \"disable_ddos_detection\": {},\r\n    \"disable_malicious_user_detection\": {},\r\n    \"disable_api_discovery\": {},\r\n    \"disable_bot_defense\": {},\r\n    \"disable_api_definition\": {},\r\n    \"disable_ip_reputation\": {},\r\n    \"disable_client_side_defense\": {},\r\n    \"graphql_rules\": [],\r\n    \"protected_cookies\": [],\r\n    \"auto_cert_info\": {\r\n      \"auto_cert_state\": \"AutoCertDisabled\",\r\n      \"dns_records\": []\r\n    },\r\n    \"internet_vip_info\": [],\r\n    \"system_default_timeouts\": {}\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/http_loadbalancers/{{namespace}}-demoshop-http-lb",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"http_loadbalancers",
+						"{{namespace}}-demoshop-http-lb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Service Policy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-allow-specific-countries-sp\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"algo\": \"FIRST_MATCH\",\r\n    \"any_server\": {},\r\n    \"rules\": [\r\n      {\r\n        \"kind\": \"service_policy_rule\",\r\n        \"namespace\": \"{{namespace}}\",\r\n        \"name\": \"ves-io-service-policy-allow-specific-countries-sp-country-list\"\r\n      }\r\n    ],\r\n    \"allow_list\": {\r\n      \"ip_prefix_set\": [],\r\n      \"asn_set\": [],\r\n      \"country_list\": [\r\n        \"COUNTRY_US\",\r\n        \"COUNTRY_UM\",\r\n        \"COUNTRY_VI\"\r\n      ],\r\n      \"tls_fingerprint_classes\": [],\r\n      \"tls_fingerprint_values\": [],\r\n      \"default_action_next_policy\": {}\r\n    },\r\n    \"simple_rules\": []\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/service_policys",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"service_policys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Service Policy to HTTP Load Balancer Copy",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metadata\": {\r\n    \"name\": \"{{namespace}}-demoshop-http-lb\",\r\n    \"namespace\": \"{{namespace}}\",\r\n    \"labels\": {},\r\n    \"annotations\": {},\r\n    \"disable\": false\r\n  },\r\n  \"spec\": {\r\n    \"domains\": [\r\n      \"{{namespace}}-demoshop.lab-app.f5demos.com\"\r\n    ],\r\n    \"http\": {\r\n      \"dns_volterra_managed\": true,\r\n      \"port\": 80\r\n    },\r\n    \"downstream_tls_certificate_expiration_timestamps\": [],\r\n    \"advertise_on_public_default_vip\": {},\r\n    \"default_route_pools\": [\r\n      {\r\n        \"pool\": {\r\n          \"namespace\": \"{{namespace}}\",\r\n          \"name\": \"{{namespace}}-demoshop-pool\",\r\n          \"kind\": \"origin_pool\"\r\n        },\r\n        \"weight\": 1,\r\n        \"priority\": 1,\r\n        \"endpoint_subsets\": {}\r\n      }\r\n    ],\r\n    \"routes\": [],\r\n    \"app_firewall\": {\r\n      \"namespace\": \"{{namespace}}\",\r\n      \"name\": \"{{namespace}}-appfw\",\r\n      \"kind\": \"app_firewall\"\r\n    },\r\n    \"add_location\": true,\r\n    \"no_challenge\": {},\r\n    \"user_id_client_ip\": {},\r\n    \"disable_rate_limit\": {},\r\n    \"waf_exclusion_rules\": [],\r\n    \"data_guard_rules\": [],\r\n    \"blocked_clients\": [],\r\n    \"trusted_clients\": [],\r\n    \"ddos_mitigation_rules\": [],\r\n    \"active_service_policies\": {\r\n      \"policies\": [\r\n        {\r\n          \"namespace\": \"{{namespace}}\",\r\n          \"name\": \"{{namespace}}-allow-specific-countries-sp\",\r\n          \"kind\": \"service_policy\"\r\n        }\r\n      ]\r\n    },\r\n    \"round_robin\": {},\r\n    \"disable_trust_client_ip_headers\": {},\r\n    \"disable_ddos_detection\": {},\r\n    \"disable_malicious_user_detection\": {},\r\n    \"disable_api_discovery\": {},\r\n    \"disable_bot_defense\": {},\r\n    \"disable_api_definition\": {},\r\n    \"disable_ip_reputation\": {},\r\n    \"disable_client_side_defense\": {},\r\n    \"graphql_rules\": [],\r\n    \"protected_cookies\": [],\r\n    \"auto_cert_info\": {\r\n      \"auto_cert_state\": \"AutoCertDisabled\",\r\n      \"dns_records\": []\r\n    },\r\n    \"internet_vip_info\": [],\r\n    \"system_default_timeouts\": {}\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/http_loadbalancers/{{namespace}}-demoshop-http-lb",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"http_loadbalancers",
+						"{{namespace}}-demoshop-http-lb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete HTTP Load Balancer",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/http_loadbalancers/{{namespace}}-demoshop-http-lb",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"http_loadbalancers",
+						"{{namespace}}-demoshop-http-lb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Service Policy",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/service_policys/{{namespace}}-allow-specific-countries-sp",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"service_policys",
+						"{{namespace}}-allow-specific-countries-sp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete App Firewall",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/app_firewalls/{{namespace}}-appfw",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"app_firewalls",
+						"{{namespace}}-appfw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Origin Pool",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/origin_pools/{{namespace}}-demoshop-pool",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"origin_pools",
+						"{{namespace}}-demoshop-pool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Health Check",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{tenant}}.console.ves.volterra.io/api/config/namespaces/{{namespace}}/healthchecks/{{namespace}}-http-hc",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}",
+						"console",
+						"ves",
+						"volterra",
+						"io"
+					],
+					"path": [
+						"api",
+						"config",
+						"namespaces",
+						"{{namespace}}",
+						"healthchecks",
+						"{{namespace}}-http-hc"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "APIToken {{api-token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
