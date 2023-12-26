@@ -73,7 +73,6 @@ resource "volterra_http_loadbalancer" "http-lb" {
     endpoint_subsets = {}
   }
 
-  routes {}
   disable_waf         = true
   add_location = true
   no_challenge        = true
