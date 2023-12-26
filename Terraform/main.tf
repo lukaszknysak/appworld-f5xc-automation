@@ -56,7 +56,7 @@ resource "volterra_http_loadbalancer" "http-lb" {
   namespace = var.namespace
   labels = {}
   annotations = {}
-  domains = "${var.namespace}-demoshop.lab-app.f5demos.com"
+  domains = ["${var.namespace}-demoshop.lab-app.f5demos.com"]
   http {
     dns_volterra_managed = true
     port = 80
@@ -79,11 +79,6 @@ resource "volterra_http_loadbalancer" "http-lb" {
   no_challenge        = true
   user_id_client_ip   = true
   disable_rate_limit  = true
-  waf_exclusion_rules {}
-  data_guard_rules {}
-  blocked_clients {}
-  trusted_clients {}
-  ddos_mitigation_rules {}
   service_policies_from_namespace = true
   round_robin = true
   disable_trust_client_ip_headers = true
@@ -94,8 +89,6 @@ resource "volterra_http_loadbalancer" "http-lb" {
   disable_api_definition = true
   disable_ip_reputation = true
   disable_client_side_defense = true
-  graphql_rules {}
-  protected_cookies {}
   no_service_policies = true
   multi_lb_app        = true
   source_ip_stickiness = true

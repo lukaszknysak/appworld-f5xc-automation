@@ -1,13 +1,7 @@
-variable "api_cert" {
+variable "api_p12" {
   description = "REQUIRED: F5 Distributed Cloud API certificate file path"
   type        = string
   default     = "/PATH/certificate.cert"
-}
-
-variable "api_key" {
-  description = "REQUIRED: F5 Distributed Cloud API certificate private key file path"
-  type        = string
-  default     = "/PATH/private_key.key"
 }
 
 variable "tenant_name" {

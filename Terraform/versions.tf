@@ -9,8 +9,7 @@ terraform {
   }
 }
 provider "volterra" {
-  api_cert = var.api_cert
-  api_key  = var.api_key
+  api_p12_file = var.api_p12
   url      = "https://${var.tenant_name}.console.ves.volterra.io/api"
 }
 
