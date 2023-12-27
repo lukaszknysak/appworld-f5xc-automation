@@ -3,5 +3,9 @@ output "http_lb_fqdn" {
 }
 
 output "http_lb_public_ip" {
-    value = volterra_http_loadbalancer.http-lb.advertise_on_public_default_vip
+  value = data.volterra_http_loadbalancer_state.lb-state.ip_address
+}
+
+output "http_lb_state" {
+  value = data.volterra_http_loadbalancer_state.lb-state.state
 }

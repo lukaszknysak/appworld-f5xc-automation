@@ -1,3 +1,9 @@
+# Get data on the LB being created
+data "volterra_http_loadbalancer_state" "lb-state" {
+  name = volterra_http_loadbalancer.http-lb.name
+  namespace = var.namespace
+}
+
 # Create Health Check
 resource "volterra_healthcheck" "http-health-check" {
   name = "${var.namespace}-http-hc"
