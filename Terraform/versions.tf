@@ -1,10 +1,10 @@
 terraform {
-  required_version = ">= 1.3.0"
+  required_version = "= 1.10.1"
 
   required_providers {
     volterra = {
       source  = "volterraedge/volterra"
-      version = ">= 0.11.29"
+      version = "= 0.11.40"
     }
   }
 }

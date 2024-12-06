@@ -79,6 +79,7 @@ resource "volterra_http_loadbalancer" "http-lb" {
     endpoint_subsets = {}
   }
 
+  disable_api_definition = true
   disable_waf         = true
   add_location = true
   no_challenge        = true
@@ -87,14 +88,11 @@ resource "volterra_http_loadbalancer" "http-lb" {
   service_policies_from_namespace = true
   round_robin = true
   disable_trust_client_ip_headers = true
-  disable_ddos_detection = true
   disable_malicious_user_detection = true
   disable_api_discovery = true
   disable_bot_defense = true
-  disable_api_definition = true
   disable_ip_reputation = true
   disable_client_side_defense = true
   no_service_policies = true
-  multi_lb_app        = true
   source_ip_stickiness = true
 }
