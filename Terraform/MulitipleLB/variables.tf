@@ -23,7 +23,6 @@ variable "loadbalancers" {
     dns_managed      = bool
     port             = string
     advertise_public = bool
-    pool_name        = string
     waf_name         = string
   }))
   default = [
@@ -33,7 +32,6 @@ variable "loadbalancers" {
       dns_managed      = false
       port             = 80
       advertise_public = false
-      pool_name        = "pool1"
       waf_name         = "waf1"
     },
     {
@@ -42,7 +40,6 @@ variable "loadbalancers" {
       dns_managed      = false
       port             = 80
       advertise_public = false
-      pool_name        = "pool1"
       waf_name         = "waf1"
     },
   ]

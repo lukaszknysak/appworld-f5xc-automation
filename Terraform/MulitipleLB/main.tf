@@ -15,7 +15,7 @@ resource "volterra_http_loadbalancer" "http-lb" {
 
   default_route_pools {
     pool {
-      name      = each.value.pool_name
+      name      = "${var.namespace}-demoshop-pool"
       namespace = var.namespace
     }
     weight           = 1
