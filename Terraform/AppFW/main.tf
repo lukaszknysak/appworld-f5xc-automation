@@ -85,7 +85,6 @@ resource "volterra_http_loadbalancer" "http-lb" {
   service_policies_from_namespace = true
   round_robin = true
   disable_trust_client_ip_headers = true
-  disable_ddos_detection = true
   disable_malicious_user_detection = true
   disable_api_discovery = true
   disable_bot_defense = true
@@ -93,7 +92,6 @@ resource "volterra_http_loadbalancer" "http-lb" {
   disable_ip_reputation = true
   disable_client_side_defense = true
   no_service_policies = true
-  multi_lb_app        = true
   source_ip_stickiness = true
 }
 
@@ -106,6 +104,5 @@ resource "volterra_app_firewall" "waf" {
   use_default_blocking_page = true
   default_bot_setting = true
   default_detection_settings = true
-  use_loadbalancer_setting = true
   blocking = true
 }
