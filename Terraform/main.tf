@@ -31,7 +31,7 @@ resource "volterra_origin_pool" "http-origin-pool" {
   origin_servers {
 
     public_name {
-      dns_name = "shop.sales-demo.f5demos.com"
+      dns_name = "appedge.one"
     }
 
     labels = {}
