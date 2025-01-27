@@ -25,7 +25,7 @@ resource "volterra_healthcheck" "http-health-check" {
 
 # Create Origin Pool
 resource "volterra_origin_pool" "http-origin-pool" {
-  name      = "${var.namespace}-demoshop-pool"
+  name      = "${var.namespace}-tf-pool"
   namespace = var.namespace
 
   origin_servers {
@@ -58,11 +58,11 @@ resource "volterra_origin_pool" "http-origin-pool" {
 
 # Create Load Balancer
 resource "volterra_http_loadbalancer" "http-lb" {
-  name        = "${var.namespace}-demoshop-http-lb"
+  name        = "${var.namespace}-tf-http-lb"
   namespace   = var.namespace
   labels      = {}
   annotations = {}
-  domains     = ["${var.namespace}-demoshop.lab-app.f5demos.com"]
+  domains     = ["${var.namespace}-tf.lab-app.f5demos.com"]
   http {
     dns_volterra_managed = true
     port                 = 80
