@@ -64,10 +64,7 @@ resource "volterra_http_loadbalancer" "http-lb" {
   annotations = {}
   domains     = ["${var.namespace}-tf.netoro.pl"]
 
-  http {
-    dns_volterra_managed = false
-    port = 80
-  }
+
 
   default_route_pools {
     pool {
