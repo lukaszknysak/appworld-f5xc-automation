@@ -4,16 +4,6 @@ variable "api_p12" {
   default     = "/PATH/certificate.cert"
 }
 
-#variable "api_cert" {
-#            type = string
-#            default = "./credentials/xc-api-cert.cert"
-#}
-        
-#variable "api_key" {
-#          type = string
-#          default = "./credentials/xc-api-cert.key"
-#}
-
 variable "api_url" {
   description = "URL API F5 XC (np. https://<tenant>.console.ves.volterra.io/api)"
   type        = string
